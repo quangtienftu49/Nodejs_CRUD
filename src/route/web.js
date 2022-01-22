@@ -9,11 +9,8 @@ let initWebRoutes = (app) => {
   router.get('/crud', homeController.getCRUD);
 
   router.post('/post-crud', homeController.postCRUD);
-
-  router.get('/about', (req, res) => {
-    return res.send('My name is Tien');
-  });
-
+  router.get('/get-crud', homeController.displayGetCRUD);
+  router.get('/edit-crud', homeController.getEditCRUD);
 
   return app.use("/", router);
 }

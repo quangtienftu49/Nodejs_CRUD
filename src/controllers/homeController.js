@@ -1,3 +1,4 @@
+import req from 'express/lib/request';
 import db from '../models/index';
 import CRUDService from "../services/CRUDService";
 
@@ -26,9 +27,32 @@ let postCRUD = async (req, res) => {
   return res.send('post crud from server');
 }
 
+let displayGetCRUD = async (req, res) => {
+  let data = await CRUDService.getAllUser();
+  console.log('-------------------')
+  console.log(data);
+  console.log('-------------------')
+  return res.render('displayCRUD.ejs', {
+    dataTable: data
+  })
+}
+
+let getEditCRUD = (req, res) => {
+  let userId = req.query.id;
+  if (userId) {
+    let userData = CRUDService.getUserInfoById(userId);
+
+  } else {
+    return res.send('hello from edit views')
+
+  }
+}
+
 module.exports = {
   getHomePage: getHomePage,
   getAboutPage: getAboutPage,
   getCRUD: getCRUD,
   postCRUD: postCRUD,
+  displayGetCRUD: displayGetCRUD,
+  getEditCRUD: getEditCRUD,
 }
