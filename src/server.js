@@ -9,6 +9,12 @@ require('dotenv').config();
 let app = express();
 // app.use(cors({ origin: true }));
 
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
+
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
 
@@ -38,7 +44,7 @@ initViewRoutes(app);
 
 connectDB();
 
-let port = process.env.PORT || 6969;
+let port = process.env.PORT || 9090;
 app.listen(port, () => {
   console.log("Listening to the PORT:", port)
 })
