@@ -3,17 +3,11 @@ import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
 import initViewRoutes from "./route/web";
 import connectDB from "./config/connectDB";
-// import cors from 'cors';
+import cors from 'cors';
 require('dotenv').config();
 
 let app = express();
-// app.use(cors({ origin: true }));
-
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
+app.use(cors({ origin: true }));
 
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
