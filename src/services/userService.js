@@ -1,7 +1,7 @@
 // import { reject } from "bcrypt/promises";
 // import res from "express/lib/response";
 import db from "../models/index";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 let handleUserLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
@@ -12,9 +12,9 @@ let handleUserLogin = (email, password) => {
       if (isExist) {
         // user exists
         let user = await db.User.findOne({
-          attributes: ['email', 'roleId', 'password'],
+          attributes: ["email", "roleId", "password"],
           where: { email: email },
-          raw: true
+          raw: true,
         });
 
         if (user) {
@@ -29,46 +29,75 @@ let handleUserLogin = (email, password) => {
             userData.user = user;
           } else {
             userData.errCode = 3;
-            userData.errMessage = 'Wrong password'
+            userData.errMessage = "Wrong password";
           }
-
         } else {
           userData.errCode = 2;
-          userData.errMessage = 'User not found'
+          userData.errMessage = "User not found";
         }
 
         // resolve()
       } else {
         // return error
         userData.errCode = 1;
-        userData.errMessage = 'Your email does not exist. Please try another email!'
+        userData.errMessage =
+          "Your email does not exist. Please try another email!";
       }
 
-      resolve(userData)
+      resolve(userData);
     } catch (e) {
-      reject(e)
+      reject(e);
     }
-  })
-}
+  });
+};
 
 let checkUserEmail = (userEmail) => {
   return new Promise(async (resolve, reject) => {
     try {
       let user = await db.User.findOne({
-        where: { email: userEmail }
-      })
+        where: { email: userEmail },
+      });
 
       if (user) {
-        resolve(true)
+        resolve(true);
       } else {
-        resolve(false)
+        resolve(false);
       }
     } catch (e) {
-      reject(e)
+      reject(e);
     }
-  })
-}
+  });
+};
+
+let getAllUsers = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = "";
+
+      if (userId === "ALL") {
+        users = await db.User.findAll({
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+      if (userId && userId !== "ALL") {
+        users = await db.User.findOne({
+          where: { id: userId },
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+
+      resolve(users);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 module.exports = {
   handleUserLogin: handleUserLogin,
-}
+  getAllUsers: getAllUsers,
+};
