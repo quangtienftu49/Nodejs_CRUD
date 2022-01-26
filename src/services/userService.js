@@ -41,7 +41,7 @@ let handleUserLogin = (email, password) => {
       } else {
         // return error
         userData.errCode = 1;
-        userData.errMessage = 'Your email does not exist. Please try other email!'
+        userData.errMessage = 'Your email does not exist. Please try another email!'
       }
 
       resolve(userData)
