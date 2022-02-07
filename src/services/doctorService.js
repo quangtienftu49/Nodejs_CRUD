@@ -101,7 +101,7 @@ let getDetailDoctorById = (inputId) => {
           where: { id: inputId },
           //join tables
           attributes: {
-            exclude: ["password", "image"],
+            exclude: ["password"],
           },
           include: [
             {
@@ -114,9 +114,19 @@ let getDetailDoctorById = (inputId) => {
               attributes: ["valueEn", "valueVi"],
             },
           ],
-          raw: true,
+          raw: false,
           nest: true,
         });
+
+        //convert buffer to base64 in Nodejs before transferring to Reactjs
+        if (data && data.image) {
+          data.image = new Buffer(data.image, "base64").toString("binary");
+        }
+
+        //avoid undefined error
+        if (!data) {
+          data = {};
+        }
 
         resolve({
           errCode: 0,
