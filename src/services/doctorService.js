@@ -184,18 +184,21 @@ let bulkCreateSchedule = (data) => {
           raw: true,
         });
 
+        // console.log("check existing: ", existing);
+        // console.log("check create: ", schedule);
+
         // convert date before comparing
-        if (existing && existing.length > 0) {
-          existing = existing.map((item) => {
-            item.date = new Date(item.date).getTime();
-            return item;
-          });
-        }
+        // if (existing && existing.length > 0) {
+        //   existing = existing.map((item) => {
+        //     item.date = new Date(item.date).getTime();
+        //     return item;
+        //   });
+        // }
 
         // compare schedule from react and existing from db
         // customize lodash: compare 2 elements a, b of schedule and existing
         let toCreate = _.differenceWith(schedule, existing, (a, b) => {
-          return a.timeType === b.timeType && a.date === b.date;
+          return a.timeType === b.timeType && +a.date === +b.date; // + transfer a string to a number
         });
 
         // if difference, create data
@@ -228,6 +231,15 @@ let getScheduleDoctorByDate = (doctorId, date) => {
       } else {
         let dataSchedule = await db.Schedule.findAll({
           where: { doctorId: doctorId, date: date },
+          include: [
+            {
+              model: db.Allcode,
+              as: "timeTypeData",
+              attributes: ["valueEn", "valueVi"],
+            },
+          ],
+          raw: false,
+          nest: true,
         });
 
         if (!dataSchedule) {
