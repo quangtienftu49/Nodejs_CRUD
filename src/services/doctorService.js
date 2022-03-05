@@ -64,17 +64,25 @@ let getAllDoctors = () => {
 let saveDetailInforDoctors = (inputData) => {
   return new Promise(async (resolve, reject) => {
     try {
+      // Either validate input data in React or Nodejs
       if (
         !inputData.doctorId ||
         !inputData.contentHTML ||
         !inputData.contentMarkdown ||
-        !inputData.action
+        !inputData.action ||
+        !inputData.selectedPrice ||
+        !inputData.selectedPayment ||
+        !inputData.selectedProvince ||
+        !inputData.selectedPrice ||
+        !inputData.addressClinic ||
+        !inputData.nameClinic
       ) {
         resolve({
           errCode: 1,
           errMessage: "Missing parameters",
         });
       } else {
+        // Update/Insert new infor to Markdown table
         if (inputData.action === "CREATE") {
           await db.Markdown.create({
             contentHTML: inputData.contentHTML,
@@ -95,12 +103,43 @@ let saveDetailInforDoctors = (inputData) => {
             await doctorMarkdown.save();
           }
         }
-      }
 
-      resolve({
-        errCode: 0,
-        errMessage: "Save doctor infor successfully!",
-      });
+        // Update/Insert new infor to Doctor_Infor table
+        let doctorInfor = await db.Doctor_infor.findOne({
+          where: {
+            doctorId: inputData.doctorId,
+          },
+          raw: false,
+        });
+
+        if (doctorInfor) {
+          // Update
+          doctorInfor.doctorId = inputData.doctorId;
+          doctorInfor.priceId = inputData.selectedPrice;
+          doctorInfor.paymentId = inputData.selectedPayment;
+          doctorInfor.provinceId = inputData.selectedProvince;
+          doctorInfor.addressClinic = inputData.addressClinic;
+          doctorInfor.nameClinic = inputData.nameClinic;
+          doctorInfor.note = inputData.note;
+          await doctorInfor.save();
+        } else {
+          // Create
+          await db.Doctor_infor.create({
+            doctorId: inputData.doctorId,
+            priceId: inputData.selectedPrice,
+            paymentId: inputData.selectedPayment,
+            provinceId: inputData.selectedProvince,
+            addressClinic: inputData.addressClinic,
+            nameClinic: inputData.nameClinic,
+            note: inputData.note,
+          });
+        }
+
+        resolve({
+          errCode: 0,
+          errMessage: "Save doctor infor successfully!",
+        });
+      }
     } catch (e) {
       reject(e);
     }
