@@ -381,6 +381,10 @@ let getProfileDoctorById = (inputId) => {
             exclude: ["password"],
           },
           include: [
+            {
+              model: db.Markdown,
+              attributes: ["description", "contentHTML", "contentMarkdown"],
+            },
             // Eager loading
             {
               model: db.Allcode,
