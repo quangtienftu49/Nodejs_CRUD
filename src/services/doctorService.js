@@ -1,4 +1,3 @@
-import { reject } from "bcrypt/promises";
 import db from "../models/index";
 require("dotenv").config();
 import _ from "lodash";
