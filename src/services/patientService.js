@@ -1,5 +1,6 @@
 import db from "../models/index";
 require("dotenv").config();
+import emailService from "./emailService";
 
 let postBookAppointment = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -10,6 +11,15 @@ let postBookAppointment = (data) => {
           errMessage: "Missing required parameters!",
         });
       } else {
+        await emailService.sendSimpleEmail({
+          receiverEmail: data.email,
+          patientName: "Tiến Quang Dinh",
+          time: "10:00 - 11:00 Thứ hai 30-06-2022",
+          doctorName: "Tiến handsome",
+          redirectLink:
+            "https://www.youtube.com/watch?v=0GL--Adfqhc&list=PLncHg6Kn2JT6E38Z3kit9Hnif1xC_9VqI&index=95",
+        });
+
         //upsert patient
         // findOrCreate is to check if record is existed >> not recorded,
         // if not existed >> inserted
