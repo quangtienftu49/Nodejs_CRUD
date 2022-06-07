@@ -35,7 +35,7 @@ let createSpecialty = (data) => {
 let getAllSpecialties = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      //findAll here means all data for a small amount of records
+      // findAll here means all data for a small amount of records
       // if thousands/millions of record, we need to use "limit"
       let data = await db.Specialty.findAll({});
 
@@ -56,13 +56,13 @@ let getAllSpecialties = () => {
   });
 };
 
-let getDetailSpecialtyById = (inputId) => {
+let getDetailSpecialtyById = (inputId, location) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!inputId) {
+      if (!inputId || !location) {
         resolve({
           errCode: 1,
-          errMessage: "Missing required parameter!",
+          errMessage: "Missing required parameters!",
         });
       } else {
         let data = await db.Specialty.findOne({
@@ -73,7 +73,23 @@ let getDetailSpecialtyById = (inputId) => {
         });
 
         if (data) {
-          // do st
+          let doctorSpecialty = [];
+          if (location === "ALL") {
+            doctorSpecialty = await db.Doctor_infor.findAll({
+              where: { specialtyId: inputId },
+              attributes: ["doctorId", "provinceId"],
+            });
+          } else {
+            // Find by location
+            doctorSpecialty = await db.Doctor_infor.findAll({
+              where: { specialtyId: inputId, provinceId: location },
+              attributes: ["doctorId", "provinceId"],
+            });
+          }
+          // console.log("check doctorSpecialty", doctorSpecialty);
+
+          data.doctorSpecialty = doctorSpecialty;
+          // console.log("check data", data);
         } else data = {};
 
         resolve({
