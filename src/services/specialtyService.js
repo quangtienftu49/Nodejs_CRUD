@@ -56,7 +56,40 @@ let getAllSpecialties = () => {
   });
 };
 
+let getDetailSpecialtyById = (inputId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!inputId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required parameter!",
+        });
+      } else {
+        let data = await db.Specialty.findOne({
+          where: {
+            id: inputId,
+          },
+          attributes: ["descriptionHTML", "descriptionMarkdown"],
+        });
+
+        if (data) {
+          // do st
+        } else data = {};
+
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+          data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createSpecialty: createSpecialty,
   getAllSpecialties: getAllSpecialties,
+  getDetailSpecialtyById: getDetailSpecialtyById,
 };
