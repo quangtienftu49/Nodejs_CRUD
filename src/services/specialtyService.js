@@ -70,27 +70,38 @@ let getDetailSpecialtyById = (inputId, location) => {
             id: inputId,
           },
           attributes: ["descriptionHTML", "descriptionMarkdown"],
+          include: [
+            {
+              model: db.Doctor_infor,
+              attributes: ["doctorId", "provinceId"],
+            },
+          ],
+          raw: false,
+          nest: true,
         });
 
-        if (data) {
-          let doctorSpecialty = [];
-          if (location === "ALL") {
-            doctorSpecialty = await db.Doctor_infor.findAll({
-              where: { specialtyId: inputId },
-              attributes: ["doctorId", "provinceId"],
-            });
-          } else {
-            // Find by location
-            doctorSpecialty = await db.Doctor_infor.findAll({
-              where: { specialtyId: inputId, provinceId: location },
-              attributes: ["doctorId", "provinceId"],
-            });
-          }
-          // console.log("check doctorSpecialty", doctorSpecialty);
+        if (!data) {
+          data = {};
+        }
 
-          data.doctorSpecialty = doctorSpecialty;
-          // console.log("check data", data);
-        } else data = {};
+        // if (data) {
+        //   let doctorSpecialty = [];
+
+        //   if (location === "ALL") {
+        //     doctorSpecialty = await db.Doctor_infor.findAll({
+        //       where: { specialtyId: inputId },
+        //       attributes: ["doctorId", "provinceId"],
+        //     });
+        //   } else {
+        //     // Find by location
+        //     doctorSpecialty = await db.Doctor_infor.findAll({
+        //       where: { specialtyId: inputId, provinceId: location },
+        //       attributes: ["doctorId", "provinceId"],
+        //     });
+        //   }
+
+        //   data.doctorSpecialty = doctorSpecialty;
+        // } else data = {};
 
         resolve({
           errCode: 0,
