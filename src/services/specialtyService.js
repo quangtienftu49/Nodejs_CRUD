@@ -65,20 +65,39 @@ let getDetailSpecialtyById = (inputId, location) => {
           errMessage: "Missing required parameters!",
         });
       } else {
-        let data = await db.Specialty.findOne({
-          where: {
-            id: inputId,
-          },
-          attributes: ["descriptionHTML", "descriptionMarkdown"],
-          include: [
-            {
-              model: db.Doctor_infor,
-              attributes: ["doctorId", "provinceId"],
+        let data = [];
+        if (location === "ALL") {
+          data = await db.Specialty.findOne({
+            where: {
+              id: inputId,
             },
-          ],
-          raw: false,
-          nest: true,
-        });
+            attributes: ["descriptionHTML", "descriptionMarkdown"],
+            include: [
+              {
+                model: db.Doctor_infor,
+                attributes: ["doctorId", "provinceId"],
+              },
+            ],
+            raw: false,
+            nest: true,
+          });
+        } else {
+          data = await db.Specialty.findOne({
+            where: {
+              id: inputId,
+            },
+            attributes: ["descriptionHTML", "descriptionMarkdown"],
+            include: [
+              {
+                model: db.Doctor_infor,
+                attributes: ["doctorId", "provinceId"],
+                where: { provinceId: location },
+              },
+            ],
+            raw: false,
+            nest: true,
+          });
+        }
 
         if (!data) {
           data = {};
