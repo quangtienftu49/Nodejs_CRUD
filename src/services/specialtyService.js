@@ -66,18 +66,19 @@ let getDetailSpecialtyById = (inputId, location) => {
         });
       } else {
         let data = {};
+        // return an array with multiple objects {provinceId: "PRO1"} etc,...
         let provinceSpecialty = await db.Doctor_infor.findAll({
           attributes: ["provinceId"],
         });
 
+        // convert the above arr into an arr with only province code
         let provinceSpecialtyArr = [];
         for (let i = 0; i < provinceSpecialty.length; i++) {
           provinceSpecialtyArr.push(provinceSpecialty[i].provinceId);
         }
 
-        // console.log("chekc provnce arr", provinceSpecialtyArr);
-
         if (location === "ALL") {
+          // search all locations
           data = await db.Specialty.findOne({
             where: {
               id: inputId,
@@ -93,6 +94,7 @@ let getDetailSpecialtyById = (inputId, location) => {
             nest: true,
           });
         } else if (provinceSpecialtyArr.indexOf(location) >= 0) {
+          // search only on location
           data = await db.Specialty.findOne({
             where: {
               id: inputId,
@@ -109,12 +111,12 @@ let getDetailSpecialtyById = (inputId, location) => {
             nest: true,
           });
         } else {
+          // return only description with locations without any registered doctors
           data = await db.Specialty.findOne({
             where: {
               id: inputId,
             },
             attributes: ["descriptionHTML", "descriptionMarkdown"],
-
             raw: false,
             nest: true,
           });
