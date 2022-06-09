@@ -65,7 +65,18 @@ let getDetailSpecialtyById = (inputId, location) => {
           errMessage: "Missing required parameters!",
         });
       } else {
-        let data = [];
+        let data = {};
+        let provinceSpecialty = await db.Doctor_infor.findAll({
+          attributes: ["provinceId"],
+        });
+
+        let provinceSpecialtyArr = [];
+        for (let i = 0; i < provinceSpecialty.length; i++) {
+          provinceSpecialtyArr.push(provinceSpecialty[i].provinceId);
+        }
+
+        // console.log("chekc provnce arr", provinceSpecialtyArr);
+
         if (location === "ALL") {
           data = await db.Specialty.findOne({
             where: {
@@ -81,7 +92,7 @@ let getDetailSpecialtyById = (inputId, location) => {
             raw: false,
             nest: true,
           });
-        } else {
+        } else if (provinceSpecialtyArr.indexOf(location) >= 0) {
           data = await db.Specialty.findOne({
             where: {
               id: inputId,
@@ -97,7 +108,32 @@ let getDetailSpecialtyById = (inputId, location) => {
             raw: false,
             nest: true,
           });
+        } else {
+          data = await db.Specialty.findOne({
+            where: {
+              id: inputId,
+            },
+            attributes: ["descriptionHTML", "descriptionMarkdown"],
+
+            raw: false,
+            nest: true,
+          });
         }
+
+        // data = await db.Specialty.findOne({
+        //   where: {
+        //     id: inputId,
+        //   },
+        //   attributes: ["descriptionHTML", "descriptionMarkdown"],
+        //   include: [
+        //     {
+        //       model: db.Doctor_infor,
+        //       attributes: ["doctorId", "provinceId"],
+        //     },
+        //   ],
+        //   raw: false,
+        //   nest: true,
+        // });
 
         if (!data) {
           data = {};
