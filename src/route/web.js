@@ -65,11 +65,11 @@ let initWebRoutes = (app) => {
   );
 
   router.post("/api/create-new-clinic", clinicController.createClinic);
-  // router.get("/api/get-all-specialties", specialtyController.getAllSpecialties);
-  // router.get(
-  //   "/api/get-detail-specialty-by-id",
-  //   specialtyController.getDetailSpecialtyById
-  // );
+  router.get("/api/get-all-clinics", clinicController.getAllClinics);
+  router.get(
+    "/api/get-detail-clinic-by-id",
+    clinicController.getDetailClinicById
+  );
 
   return app.use("/", router);
 };
