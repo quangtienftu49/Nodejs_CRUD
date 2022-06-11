@@ -56,109 +56,37 @@ let getAllClinics = () => {
   });
 };
 
-let getDetailClinicById = (inputId, location) => {
+let getDetailClinicById = (inputId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!inputId || !location) {
+      if (!inputId) {
         resolve({
           errCode: 1,
           errMessage: "Missing required parameters!",
         });
       } else {
-        let data = {};
-        // return an array with multiple objects {provinceId: "PRO1"} etc,...
-        let provinceSpecialty = await db.Doctor_infor.findAll({
-          attributes: ["provinceId"],
+        let data = await db.Clinic.findOne({
+          where: {
+            id: inputId,
+          },
+          attributes: [
+            "descriptionHTML",
+            "descriptionMarkdown",
+            "address",
+            "name",
+          ],
         });
 
-        // convert the above arr into an arr with only province code
-        let provinceSpecialtyArr = [];
-        for (let i = 0; i < provinceSpecialty.length; i++) {
-          provinceSpecialtyArr.push(provinceSpecialty[i].provinceId);
-        }
+        if (data) {
+          let doctorClinic = [];
 
-        if (location === "ALL") {
-          // search all locations
-          data = await db.Specialty.findOne({
-            where: {
-              id: inputId,
-            },
-            attributes: ["descriptionHTML", "descriptionMarkdown"],
-            include: [
-              {
-                model: db.Doctor_infor,
-                attributes: ["doctorId", "provinceId"],
-              },
-            ],
-            raw: false,
-            nest: true,
+          doctorClinic = await db.Doctor_infor.findAll({
+            where: { clinicId: inputId },
+            attributes: ["doctorId", "provinceId"],
           });
-        } else if (provinceSpecialtyArr.indexOf(location) >= 0) {
-          // search only on location
-          data = await db.Specialty.findOne({
-            where: {
-              id: inputId,
-            },
-            attributes: ["descriptionHTML", "descriptionMarkdown"],
-            include: [
-              {
-                model: db.Doctor_infor,
-                attributes: ["doctorId", "provinceId"],
-                where: { provinceId: location },
-              },
-            ],
-            raw: false,
-            nest: true,
-          });
-        } else {
-          // return only description with locations without any registered doctors
-          data = await db.Specialty.findOne({
-            where: {
-              id: inputId,
-            },
-            attributes: ["descriptionHTML", "descriptionMarkdown"],
-            raw: false,
-            nest: true,
-          });
-        }
 
-        // data = await db.Specialty.findOne({
-        //   where: {
-        //     id: inputId,
-        //   },
-        //   attributes: ["descriptionHTML", "descriptionMarkdown"],
-        //   include: [
-        //     {
-        //       model: db.Doctor_infor,
-        //       attributes: ["doctorId", "provinceId"],
-        //     },
-        //   ],
-        //   raw: false,
-        //   nest: true,
-        // });
-
-        if (!data) {
-          data = {};
-        }
-
-        // if (data) {
-        //   let doctorSpecialty = [];
-
-        //   if (location === "ALL") {
-        //     doctorSpecialty = await db.Doctor_infor.findAll({
-        //       where: { specialtyId: inputId },
-        //       attributes: ["doctorId", "provinceId"],
-        //     });
-        //   } else {
-        //     // Find by location
-        //     doctorSpecialty = await db.Doctor_infor.findAll({
-        //       where: { specialtyId: inputId, provinceId: location },
-        //       attributes: ["doctorId", "provinceId"],
-        //     });
-        //   }
-
-        //   data.doctorSpecialty = doctorSpecialty;
-        // } else data = {};
+          data.doctorClinic = doctorClinic;
+        } else data = {};
 
         resolve({
           errCode: 0,
