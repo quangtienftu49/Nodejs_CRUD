@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "specialtyId",
         targetKey: "id",
       });
+      Doctor_infor.belongsTo(models.Clinic, {
+        foreignKey: "clinicId",
+        targetKey: "id",
+      });
     }
   }
 

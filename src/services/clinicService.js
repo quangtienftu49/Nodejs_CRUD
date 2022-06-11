@@ -75,18 +75,19 @@ let getDetailClinicById = (inputId) => {
             "address",
             "name",
           ],
+          include: [
+            {
+              model: db.Doctor_infor,
+              attributes: ["doctorId", "provinceId"],
+            },
+          ],
+          raw: false,
+          nest: true,
         });
 
-        if (data) {
-          let doctorClinic = [];
-
-          doctorClinic = await db.Doctor_infor.findAll({
-            where: { clinicId: inputId },
-            attributes: ["doctorId", "provinceId"],
-          });
-
-          data.doctorClinic = doctorClinic;
-        } else data = {};
+        if (!data) {
+          data = {};
+        }
 
         resolve({
           errCode: 0,
