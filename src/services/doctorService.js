@@ -486,6 +486,14 @@ let getPatientListForDoctor = (doctorId, date) => {
             doctorId: doctorId,
             date: date,
           },
+          include: [
+            {
+              model: db.User,
+              attributes: ["email", "firstName", "address", "gender"],
+            },
+          ],
+          raw: false,
+          nest: true,
         });
 
         resolve({

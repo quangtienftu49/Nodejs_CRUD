@@ -19,8 +19,8 @@ let postBookAppointment = (data) => {
         !data.timeType ||
         !data.date ||
         !data.selectedGender ||
-        !data.address ||
-        !data.reason
+        !data.address
+        // !data.reason
       ) {
         resolve({
           errCode: 1,
@@ -38,7 +38,7 @@ let postBookAppointment = (data) => {
           redirectLink: buildUrlEmail(data.doctorId, token),
         });
 
-        //upsert patient
+        // upsert patient
         // findOrCreate is to check if record is existed >> not recorded,
         // if not existed >> inserted
         let user = await db.User.findOrCreate({
@@ -46,6 +46,9 @@ let postBookAppointment = (data) => {
           defaults: {
             email: data.email,
             roleId: "R3",
+            gender: data.selectedGender,
+            address: data.address,
+            firstName: data.fullName,
           },
         });
 
