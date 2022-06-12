@@ -469,6 +469,36 @@ let getProfileDoctorById = (inputId) => {
   });
 };
 
+let getPatientListForDoctor = (doctorId, date) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!doctorId || !date) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required parameters!",
+        });
+      } else {
+        // findAll would result in an empty array if no results
+        // so no need to check undefined result but findOne
+        let data = await db.Booking.findAll({
+          where: {
+            statusId: "S2",
+            doctorId: doctorId,
+            date: date,
+          },
+        });
+
+        resolve({
+          errCode: 0,
+          data: data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopDoctorHome: getTopDoctorHome,
   getAllDoctors: getAllDoctors,
@@ -478,4 +508,5 @@ module.exports = {
   getScheduleDoctorByDate: getScheduleDoctorByDate,
   getExtraInforDoctorById: getExtraInforDoctorById,
   getProfileDoctorById: getProfileDoctorById,
+  getPatientListForDoctor: getPatientListForDoctor,
 };
