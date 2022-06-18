@@ -523,13 +523,28 @@ let getPatientListForDoctor = (doctorId, date) => {
 let sendPrescription = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!data.email || !data.doctorId || !data.patientId) {
+      if (!data.email || !data.doctorId || !data.patientId || !data.timeType) {
         resolve({
           errCode: 1,
           errMessage: "Missing required parameters!",
         });
       } else {
         // Update patient status
+        let appointment = await db.Booking.findOne({
+          where: {
+            doctorId: data.doctorId,
+            patientId: data.patientId,
+            timeType: data.timeType,
+            statusId: "S2",
+          },
+          // result in a sequelize class to use 'save' function
+          raw: false,
+        });
+
+        if (appointment) {
+          appointment.statusId = "S3";
+          await appointment.save();
+        }
 
         // Send prescription email
 
