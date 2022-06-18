@@ -520,6 +520,30 @@ let getPatientListForDoctor = (doctorId, date) => {
   });
 };
 
+let sendPrescription = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.email || !data.doctorId || !data.patientId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required parameters!",
+        });
+      } else {
+        // Update patient status
+
+        // Send prescription email
+
+        resolve({
+          errCode: 0,
+          data: data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopDoctorHome: getTopDoctorHome,
   getAllDoctors: getAllDoctors,
@@ -530,4 +554,5 @@ module.exports = {
   getExtraInforDoctorById: getExtraInforDoctorById,
   getProfileDoctorById: getProfileDoctorById,
   getPatientListForDoctor: getPatientListForDoctor,
+  sendPrescription: sendPrescription,
 };

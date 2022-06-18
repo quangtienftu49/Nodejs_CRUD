@@ -52,7 +52,7 @@ let postBookAppointment = (data) => {
           },
         });
 
-        console.log("check user", user[0]);
+        // console.log("check user", user[0]);
 
         //create a booking record
         if (user && user[0]) {
