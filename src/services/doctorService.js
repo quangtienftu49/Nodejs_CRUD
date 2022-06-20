@@ -1,6 +1,7 @@
 import db from "../models/index";
 require("dotenv").config();
 import _ from "lodash";
+import emailService from "../services/emailService";
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
@@ -547,10 +548,12 @@ let sendPrescription = (data) => {
         }
 
         // Send prescription email
+        // console.log("check server", data);
+        await emailService.sendAttachment(data);
 
         resolve({
           errCode: 0,
-          data: data,
+          errMessage: "ok",
         });
       }
     } catch (e) {
