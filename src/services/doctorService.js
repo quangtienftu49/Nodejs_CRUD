@@ -451,7 +451,7 @@ let getProfileDoctorById = (inputId) => {
 
         //convert buffer to base64 in Nodejs before transferring to Reactjs
         if (data && data.image) {
-          data.image = new Buffer(data.image, "base64").toString("binary");
+          data.image = Buffer.from(data.image, "base64").toString("binary");
         }
 
         //avoid undefined error
